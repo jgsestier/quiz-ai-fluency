@@ -10,6 +10,14 @@
         .hover-scale:hover { transform: scale(1.02); }
         .fade-in { animation: fadeIn 0.5s ease-in; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        #app {
+    min-height: 100vh;
+}
+
+.quiz-container {
+    min-height: 800px; /* Hauteur fixe pour éviter les sauts */
+}
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
@@ -582,7 +590,7 @@
 
                 app.innerHTML = `
                     <div class="max-w-4xl mx-auto p-6 min-h-screen">
-                        <div class="bg-white rounded-2xl shadow-xl p-8 fade-in">
+                        <div class="bg-white rounded-2xl shadow-xl p-8 fade-in quiz-container">
                             <!-- Header avec progression -->
                             <div class="flex items-center justify-between mb-6">
                                 <div class="flex items-center">
