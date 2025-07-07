@@ -761,23 +761,7 @@
         function selectAnswer(index) {
     if (showExplanation) return;
     selectedAnswer = index;
-    
-    // Mise à jour manuelle des boutons sans render()
-    const buttons = document.querySelectorAll('#answerOptions button');
-    buttons.forEach((btn, i) => {
-        if (i === index) {
-            btn.className = 'w-full p-4 text-left border-2 rounded-xl transition-all duration-300 border-blue-500 bg-blue-50 text-blue-800';
-        } else {
-            btn.className = 'w-full p-4 text-left border-2 rounded-xl transition-all duration-300 border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700';
-        }
-    });
-    
-    // Activation du bouton Valider
-    const actionButton = document.getElementById('actionButton');
-    actionButton.disabled = false;
-    actionButton.className = 'px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gradient-bg text-white hover-scale';
-    
-    // PAS de render() ici !
+    render();
 }
 
         function handleNext() {
