@@ -733,15 +733,22 @@
 
         // Fonctions principales
         function startQuiz() {
-            startTime = Date.now();
-            timer = setInterval(() => {
-                if (!quizCompleted) {
-                    timeSpent = Math.floor((Date.now() - startTime) / 1000);
-                    render();
-                }
-            }, 1000);
-            render();
+    startTime = Date.now();
+    
+    // Timer qui se met à jour SEULEMENT quand on n'est pas en train de répondre
+    timer = setInterval(() => {
+        if (!quizCompleted && !showExplanation) {
+            timeSpent = Math.floor((Date.now() - startTime) / 1000);
+            // Mise à jour SEULEMENT du timer, pas de re-render complet
+            const timerElement = document.getElementById('timer');
+            if (timerElement) {
+                timerElement.textContent = formatTime(timeSpent);
+            }
         }
+    }, 1000);
+    
+    render();
+}
 
         function selectAnswer(index) {
             if (showExplanation) return;
