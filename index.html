@@ -3,317 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz AI Fluency - Évaluez vos compétences en IA</title>
+    <title>Quiz AI Fluency</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .gradient-bg { background: linear-gradient(135deg, #3b82f6, #8b5cf6); }
         .hover-scale:hover { transform: scale(1.02); }
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+    <div id="app"></div>
     
-    <div class="max-w-4xl mx-auto p-6 min-h-screen">
-        
-        <!-- Écran de démarrage -->
-        <div id="startScreen" class="bg-white rounded-2xl shadow-xl p-8 text-center fade-in">
-            <div class="text-6xl mb-6">🧠</div>
-            <h1 class="text-4xl font-bold mb-4 text-gray-800">Quiz AI Fluency</h1>
-            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                Évaluez votre maîtrise de l'intelligence artificielle avec ce quiz interactif de 20 questions.
-                Testez vos connaissances théoriques et pratiques !
-            </p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div class="bg-blue-50 p-4 rounded-lg">
-                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <span class="text-white text-xl">🧠</span>
-                    </div>
-                    <h3 class="font-semibold text-blue-800">Comprendre</h3>
-                    <p class="text-sm text-blue-600">Les bases de l'IA</p>
-                </div>
-                <div class="bg-green-50 p-4 rounded-lg">
-                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <span class="text-white text-xl">⚡</span>
-                    </div>
-                    <h3 class="font-semibold text-green-800">Utiliser</h3>
-                    <p class="text-sm text-green-600">Prompt engineering</p>
-                </div>
-                <div class="bg-orange-50 p-4 rounded-lg">
-                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <span class="text-white text-xl">🎯</span>
-                    </div>
-                    <h3 class="font-semibold text-orange-800">Évaluer</h3>
-                    <p class="text-sm text-orange-600">Esprit critique</p>
-                </div>
-                <div class="bg-purple-50 p-4 rounded-lg">
-                    <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <span class="text-white text-xl">🚀</span>
-                    </div>
-                    <h3 class="font-semibold text-purple-800">Créer</h3>
-                    <p class="text-sm text-purple-600">Automatiser</p>
-                </div>
-            </div>
-            
-            <button onclick="startQuiz()" class="gradient-bg text-white px-8 py-4 rounded-xl font-semibold text-lg hover-scale transition-all duration-300 shadow-lg">
-                🚀 Commencer le Quiz
-            </button>
-            
-            <div class="mt-6 text-sm text-gray-500">
-                ⏱️ Durée estimée : 15 minutes • 📊 20 questions • 🏆 Certification de niveau
-            </div>
-        </div>
-
-        <!-- Écran de quiz -->
-        <div id="quizScreen" class="bg-white rounded-2xl shadow-xl p-8 hidden fade-in">
-            <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center">
-                    <div id="categoryIcon" class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white mr-4">🧠</div>
-                    <div>
-                        <h2 id="categoryName" class="text-lg font-semibold text-gray-800">Comprendre les bases</h2>
-                        <p id="questionCounter" class="text-sm text-gray-600">Question 1 sur 20</p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <div id="currentScore" class="text-2xl font-bold text-blue-600">0</div>
-                    <div class="text-sm text-gray-600">Score</div>
-                </div>
-            </div>
-
-            <div class="w-full bg-gray-200 rounded-full h-2 mb-8">
-                <div id="progressBar" class="gradient-bg h-2 rounded-full transition-all duration-500" style="width: 5%"></div>
-            </div>
-
-            <div class="mb-8">
-                <h1 id="questionText" class="text-2xl font-bold text-gray-800 mb-6"></h1>
-                <div id="answerOptions" class="space-y-3"></div>
-            </div>
-
-            <div id="explanationArea" class="mb-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200 hidden">
-                <div class="flex items-center mb-3">
-                    <span class="text-blue-600 mr-2">📖</span>
-                    <h3 class="text-lg font-semibold text-blue-800">Explication</h3>
-                </div>
-                <p id="explanationText" class="text-gray-700 mb-4"></p>
-                
-                <div class="border-t border-blue-200 pt-4">
-                    <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
-                        <span class="mr-2">⭐</span>
-                        Définitions
-                    </h4>
-                    <div id="definitionsArea" class="space-y-2"></div>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center">
-                <div class="text-sm text-gray-600">
-                    ⏱️ Temps: <span id="timer">0:00</span>
-                </div>
-                
-                <button id="actionButton" onclick="handleNext()" disabled 
-                        class="px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center bg-gray-300 text-gray-500 cursor-not-allowed">
-                    Valider ✅
-                </button>
-            </div>
-        </div>
-
-        <!-- Écran de résultats -->
-        <div id="resultsScreen" class="bg-white rounded-2xl shadow-xl p-8 text-center hidden fade-in">
-            <div class="text-6xl mb-4" id="resultIcon">🏆</div>
-            <h1 class="text-3xl font-bold mb-4">Quiz Terminé !</h1>
-            
-            <div class="gradient-bg text-white rounded-xl p-6 mb-6">
-                <div id="finalScore" class="text-4xl font-bold mb-2">18/20</div>
-                <div id="levelBadge" class="text-xl font-semibold bg-white rounded-lg py-2 px-4 inline-block mb-3 text-green-600">
-                    AI Fluent
-                </div>
-                <p id="levelDescription" class="text-sm opacity-90 max-w-2xl mx-auto">
-                    Excellente maîtrise ! Vous avez une compréhension approfondie de l'IA.
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div id="percentageScore" class="text-2xl font-bold text-gray-700">90%</div>
-                    <div class="text-sm text-gray-600">Score</div>
-                </div>
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div id="finalTime" class="text-2xl font-bold text-gray-700">2:15</div>
-                    <div class="text-sm text-gray-600">Temps</div>
-                </div>
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div id="correctAnswers" class="text-2xl font-bold text-gray-700">18</div>
-                    <div class="text-sm text-gray-600">Bonnes réponses</div>
-                </div>
-            </div>
-
-            <div class="mb-8">
-                <h3 class="text-xl font-semibold mb-4">Résultats par catégorie</h3>
-                <div id="categoryResults" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-            
-            <button onclick="restartQuiz()" class="gradient-bg text-white px-8 py-3 rounded-xl font-semibold hover-scale transition-all duration-300 flex items-center mx-auto">
-                🔄 Recommencer le Quiz
-            </button>
-        </div>
-    </div>
-
     <script>
+        // Variables globales
         let currentQuestion = 0, selectedAnswer = null, showExplanation = false, score = 0, answers = [], quizCompleted = false, startTime = Date.now(), timeSpent = 0, timer;
 
+        // Questions (version simplifiée pour éviter les erreurs)
         const questions = [
-            { id: 1, category: "Comprendre les bases", categoryColor: "bg-blue-500", categoryIcon: "🧠", question: "Qu'appelle-t-on \"hallucination\" dans un LLM ?", options: ["L'arrêt brutal de la génération", "Une réponse plausible mais factuellement fausse", "Un prompt trop court", "Un biais lié aux données d'entraînement"], correct: 1, explanation: "Une hallucination dans un LLM se produit quand le modèle génère une information qui semble crédible mais qui est factuellement incorrecte.", definitions: { "LLM": "Large Language Model - Modèle de langage de grande taille", "Hallucination": "Génération d'informations plausibles mais incorrectes" } },
-            { id: 2, category: "Comprendre les bases", categoryColor: "bg-blue-500", categoryIcon: "🧠", question: "La couche \"self-attention\" d'un Transformer sert principalement à :", options: ["Normaliser les poids", "Détecter les spams", "Pondérer l'importance relative des tokens", "Compresser le modèle"], correct: 2, explanation: "Le mécanisme de self-attention permet au modèle de déterminer lesquels des mots sont les plus importants pour comprendre chaque mot en contexte.", definitions: { "Self-attention": "Mécanisme permettant à chaque token de faire attention aux autres tokens pertinents", "Transformer": "Architecture révolutionnaire basée sur l'attention", "Token": "Unité de base du texte traité par un modèle" } },
-            { id: 3, category: "Comprendre les bases", categoryColor: "bg-blue-500", categoryIcon: "🧠", question: "Quel risque l'algorithme \"chain-of-thought\" cherche-t-il à réduire ?", options: ["Overfitting", "Sous-spécification", "Biais de répétition", "Réponses superficielles"], correct: 3, explanation: "Le chain-of-thought pousse le modèle à expliciter son raisonnement étape par étape, évitant les réponses superficielles.", definitions: { "Chain-of-thought": "Technique demandant au modèle d'expliquer son raisonnement étape par étape", "Overfitting": "Apprentissage trop spécifique aux données d'entraînement" } },
-            { id: 4, category: "Comprendre les bases", categoryColor: "bg-blue-500", categoryIcon: "🧠", question: "Parmi ces licences, laquelle autorise le fine-tuning commercial sans restriction ?", options: ["GPL-3", "Apache-2.0", "CC-BY-NC", "MIT"], correct: 1, explanation: "Apache-2.0 est une licence permissive qui autorise l'usage commercial, la modification et la redistribution.", definitions: { "Fine-tuning": "Adaptation d'un modèle pré-entraîné à une tâche spécifique", "Apache-2.0": "Licence open source permissive", "GPL-3": "Licence copyleft exigeant que les modifications restent open source" } },
-            { id: 5, category: "Comprendre les bases", categoryColor: "bg-blue-500", categoryIcon: "🧠", question: "Le test AICOS mesure surtout :", options: ["L'intelligence émotionnelle face à l'IA", "La capacité objective à utiliser et évaluer des systèmes IA", "Les performances de code", "L'opinion sur l'éthique de l'IA"], correct: 1, explanation: "AICOS est un framework d'évaluation objective des compétences pratiques en IA.", definitions: { "AICOS": "AI Competency Objective Scale - Échelle d'évaluation des compétences en IA", "Framework": "Cadre méthodologique structuré" } },
-            { id: 6, category: "Utiliser / prompt-engineer", categoryColor: "bg-green-500", categoryIcon: "⚡", question: "Quelle structure de prompt maximise la clarté pour ChatGPT ?", options: ["Question → Contexte → Rôle", "Rôle → Contexte → Tâche", "Tâche → Rôle → Contexte", "Contexte → Tâche → Rôle"], correct: 1, explanation: "La structure optimale : rôle (qui vous êtes), contexte (situation), puis tâche précise.", definitions: { "Prompt engineering": "Art d'optimiser les instructions données à un modèle IA", "Contexte": "Informations de background nécessaires" } },
-            { id: 7, category: "Utiliser / prompt-engineer", categoryColor: "bg-green-500", categoryIcon: "⚡", question: "\"Few-shot prompting\" consiste à :", options: ["Diviser une requête en plusieurs sous-prompts", "Donner des exemples pour guider la sortie", "Limiter la génération à quelques tokens", "Réinitialiser le contexte à chaque tour"], correct: 1, explanation: "Le few-shot prompting fournit quelques exemples du format de sortie désiré.", definitions: { "Few-shot": "Apprentissage avec peu d'exemples (2-5)", "Zero-shot": "Utilisation sans exemples", "One-shot": "Apprentissage avec un seul exemple" } },
-            { id: 8, category: "Utiliser / prompt-engineer", categoryColor: "bg-green-500", categoryIcon: "⚡", question: "Pour obtenir un résumé objectif d'un article, quel paramètre baisser ?", options: ["Temperature", "Top-p", "Max_tokens", "Frequency_penalty"], correct: 0, explanation: "Baisser la température réduit la créativité et favorise des réponses plus déterministes et factuelles.", definitions: { "Temperature": "Paramètre contrôlant la créativité (0=déterministe, 1=créatif)", "Top-p": "Paramètre de nucleus sampling", "Max_tokens": "Limite maximale de tokens générés" } },
-            { id: 9, category: "Utiliser / prompt-engineer", categoryColor: "bg-green-500", categoryIcon: "⚡", question: "Quelle technique réduit le plus le temps de réponse d'un LLM en production ?", options: ["Quantization 8-bits", "Data augmentation", "Dropout 0%", "Beam search"], correct: 0, explanation: "La quantization 8-bits réduit la précision numérique, diminuant la mémoire requise et accélérant les calculs.", definitions: { "Quantization": "Réduction de la précision numérique pour optimiser performance", "Data augmentation": "Enrichissement des données d'entraînement", "Dropout": "Technique de régularisation" } },
-            { id: 10, category: "Utiliser / prompt-engineer", categoryColor: "bg-green-500", categoryIcon: "⚡", question: "L'instruction \"You are a strict grammar-checking assistant\" est un exemple de :", options: ["System message", "Meta-prompt", "Token biasing", "Function call"], correct: 0, explanation: "Un system message définit le rôle et le comportement global de l'assistant avant la conversation.", definitions: { "System message": "Message définissant le rôle global de l'IA", "Meta-prompt": "Prompt parlant de prompts", "Token biasing": "Modification de probabilité de certains tokens" } },
-            { id: 11, category: "Évaluer / esprit critique", categoryColor: "bg-orange-500", categoryIcon: "🎯", question: "Un biais d'\"exposition\" peut apparaître quand :", options: ["Le modèle est entraîné sur ses propres sorties itératives", "Les données contiennent des fautes d'orthographe", "Le prompt dépasse 8 000 tokens", "On utilise un modèle quantisé"], correct: 0, explanation: "Le biais d'exposition survient quand un modèle s'entraîne sur ses propres productions, créant une boucle de rétroaction.", definitions: { "Biais d'exposition": "Dégradation causée par l'entraînement sur ses propres sorties", "Rétroaction": "Processus où la sortie influence l'entrée suivante" } },
-            { id: 12, category: "Évaluer / esprit critique", categoryColor: "bg-orange-500", categoryIcon: "🎯", question: "Dans une approche RAG, la phase retrieval sert à :", options: ["Filtrer les hallucinations après génération", "Extraire des passages pertinents avant la génération", "Agrandir le modèle dynamiquement", "Corriger la grammaire"], correct: 1, explanation: "RAG commence par récupérer des documents pertinents, puis utilise ces informations pour augmenter le contexte.", definitions: { "RAG": "Retrieval-Augmented Generation - Architecture combinant recherche et génération", "Retrieval": "Phase de recherche d'informations pertinentes" } },
-            { id: 13, category: "Évaluer / esprit critique", categoryColor: "bg-orange-500", categoryIcon: "🎯", question: "Quel indicateur automatique mesure la cohérence factuelle d'un texte généré ?", options: ["BLEU", "ROUGE-L", "FactScore", "Perplexity"], correct: 2, explanation: "FactScore évalue spécifiquement la précision factuelle en décomposant le texte en affirmations atomiques.", definitions: { "FactScore": "Métrique évaluant la précision factuelle", "BLEU": "Métrique mesurant la similarité textuelle", "ROUGE": "Métrique basée sur le rappel de n-grammes" } },
-            { id: 14, category: "Évaluer / esprit critique", categoryColor: "bg-orange-500", categoryIcon: "🎯", question: "Parmi ces scénarios, lequel pose le plus gros risque RGPD ?", options: ["Fine-tuner un modèle local sur des PDF publics", "Interroger une API US avec des e-mails clients européens non anonymisés", "Générer du code open-source à partir de StackOverflow", "Utiliser un modèle open-weight sur GPU interne"], correct: 1, explanation: "Envoyer des données personnelles européennes vers une API américaine sans anonymisation viole le RGPD.", definitions: { "RGPD": "Règlement européen sur la protection des données", "Anonymisation": "Processus rendant impossible l'identification", "Transfert de données": "Envoi de données personnelles vers un pays tiers" } },
-            { id: 15, category: "Évaluer / esprit critique", categoryColor: "bg-orange-500", categoryIcon: "🎯", question: "Quand faut-il surtout recourir à la guardrail de type règle régulière ?", options: ["Pour réduire le coût d'inférence", "Pour filtrer des données structurées sensibles avant génération", "Pour optimiser la grammaire", "Pour compresser le contexte"], correct: 1, explanation: "Les guardrails regex sont efficaces pour détecter des patterns précis (emails, numéros) dans les inputs.", definitions: { "Guardrails": "Mécanismes de sécurité contrôlant les entrées/sorties", "Règle régulière": "Pattern de détection basé sur les regex", "Données structurées": "Informations organisées selon un format prédéfini" } },
-            { id: 16, category: "Créer / automatiser", categoryColor: "bg-purple-500", categoryIcon: "🚀", question: "Zapier + GPT est pertinent pour :", options: ["Former un modèle de vision", "Automatiser un reporting hebdo", "Détecter des fraudes bancaires temps réel", "Compiler un programme C++"], correct: 1, explanation: "Zapier excelle dans l'automatisation de workflows non-critiques comme les rapports périodiques.", definitions: { "Zapier": "Plateforme no-code d'automatisation", "Workflow": "Séquence automatisée d'actions", "No-code": "Approche sans programmation traditionnelle" } },
-            { id: 17, category: "Créer / automatiser", categoryColor: "bg-purple-500", categoryIcon: "🚀", question: "Dans un workflow agentique, le \"critic agent\" a pour rôle de :", options: ["Planifier les sous-tâches", "Noter et corriger la sortie d'un \"solver\"", "Chercher des documents externes", "Gérer la mémoire longue durée"], correct: 1, explanation: "Le critic agent évalue et critique le travail du solver agent dans une boucle d'amélioration.", definitions: { "Workflow agentique": "Système où plusieurs agents IA collaborent", "Critic agent": "Agent spécialisé dans l'évaluation du travail d'autres agents", "Multi-agents": "Architecture utilisant plusieurs IA spécialisées" } },
-            { id: 18, category: "Créer / automatiser", categoryColor: "bg-purple-500", categoryIcon: "🚀", question: "Le rate limit d'une API LLM doit être géré côté client pour :", options: ["Réduire le drift de modèle", "Éviter les erreurs 429 et la perte de session", "Augmenter la diversité des réponses", "Activer la compression gzip"], correct: 1, explanation: "Les erreurs 429 surviennent en dépassant les limites de requêtes. Une gestion client évite les pertes de données.", definitions: { "Rate limit": "Limitation du nombre de requêtes par unité de temps", "Erreur 429": "Code HTTP de dépassement de limite", "Backoff": "Stratégie d'attente progressive" } },
-            { id: 19, category: "Créer / automatiser", categoryColor: "bg-purple-500", categoryIcon: "🚀", question: "Pour sécuriser un chatbot interne, la première mesure est :", options: ["Passer en serveur on-prem", "Implémenter l'authentification SSO et la gestion des rôles", "Chiffrer la base vectorielle", "Activer le streaming de tokens"], correct: 1, explanation: "L'authentification et l'autorisation sont les fondements de la sécurité avant les optimisations techniques.", definitions: { "SSO": "Single Sign-On - Authentification unique", "Gestion des rôles": "Système contrôlant les permissions", "On-prem": "Infrastructure hébergée sur site" } },
-            { id: 20, category: "Créer / automatiser", categoryColor: "bg-purple-500", categoryIcon: "🚀", question: "Lorsqu'un modèle open-weight est fine-tuné sur un corpus propriétaire, la licence Apache-2.0 :", options: ["Interdit toute redistribution", "Exige d'ouvrir les nouveaux poids", "Autorise l'usage commercial et la redistribution des poids dérivés sans obligation copyleft", "Impose une clause \"Non Commercial\""], correct: 2, explanation: "Apache-2.0 est permissive : elle autorise modifications, usage commercial et redistribution sans exiger l'open source des dérivés.", definitions: { "Open-weight": "Modèle dont les poids sont disponibles publiquement", "Copyleft": "Principe obligeant les dérivés à rester open source", "Licence permissive": "Licence autorisant usage commercial sans restrictions majeures" } }
+            { id: 1, category: "Comprendre", question: "Qu'est-ce qu'une hallucination dans un LLM ?", options: ["Arrêt brutal", "Réponse plausible mais fausse", "Prompt court", "Biais données"], correct: 1, explanation: "Une hallucination se produit quand le modèle génère une information crédible mais incorrecte." },
+            { id: 2, category: "Comprendre", question: "La self-attention sert à :", options: ["Normaliser", "Détecter spam", "Pondérer les tokens", "Compresser"], correct: 2, explanation: "La self-attention détermine l'importance relative des mots dans la séquence." },
+            { id: 3, category: "Utiliser", question: "Few-shot prompting consiste à :", options: ["Diviser requête", "Donner des exemples", "Limiter tokens", "Reset contexte"], correct: 1, explanation: "Le few-shot fournit des exemples pour guider la sortie du modèle." },
+            { id: 4, category: "Utiliser", question: "Pour un résumé objectif, baisser quel paramètre ?", options: ["Temperature", "Top-p", "Max_tokens", "Frequency"], correct: 0, explanation: "Baisser la température favorise des réponses plus déterministes." },
+            { id: 5, category: "Évaluer", question: "Dans RAG, le retrieval sert à :", options: ["Filtrer après", "Extraire avant génération", "Agrandir modèle", "Corriger grammaire"], correct: 1, explanation: "RAG récupère d'abord des documents pertinents avant la génération." }
         ];
 
-        function formatTime(seconds) { const mins = Math.floor(seconds / 60); const secs = seconds % 60; return `${mins}:${secs.toString().padStart(2, '0')}`; }
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return mins + ':' + secs.toString().padStart(2, '0');
+        }
 
         function getScoreLevel(score) {
-            if (score >= 18) return { level: "AI Fluent", color: "text-green-600", icon: "🏆", description: "Excellente maîtrise ! Compréhension approfondie de l'IA et usage efficace dans des contextes professionnels complexes." };
-            if (score >= 14) return { level: "AI Conversant", color: "text-blue-600", icon: "🥈", description: "Bonne maîtrise ! Vous comprenez bien les concepts clés et savez les appliquer dans la plupart des situations courantes." };
-            if (score >= 10) return { level: "AI Novice", color: "text-orange-600", icon: "🥉", description: "Bases solides ! Compréhension correcte des fondamentaux, mais progression possible dans l'application pratique." };
-            return { level: "Foundational", color: "text-gray-600", icon: "📚", description: "Début de parcours ! Connaissances de base en IA. Bénéfique d'approfondir les connaissances théoriques et pratiques." };
+            if (score >= 4) return { level: "AI Fluent", color: "text-green-600", icon: "🏆" };
+            if (score >= 3) return { level: "AI Conversant", color: "text-blue-600", icon: "🥈" };
+            if (score >= 2) return { level: "AI Novice", color: "text-orange-600", icon: "🥉" };
+            return { level: "Foundational", color: "text-gray-600", icon: "📚" };
         }
 
-        function startQuiz() { document.getElementById('startScreen').classList.add('hidden'); document.getElementById('quizScreen').classList.remove('hidden'); startTime = Date.now(); timer = setInterval(updateTimer, 1000); loadQuestion(); }
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!quizCompleted && currentQuestion === 0 && !timer) {
+                // Écran de démarrage
+                app.innerHTML = `
+                    <div class="max-w-4xl mx-auto p-6">
+                        <div class="bg-white rounded-2xl shadow-xl p-8 text-center">
+                            <div class="text-6xl mb-6">🧠</div>
+                            <h1 class="text-4xl font-bold mb-4">Quiz AI Fluency</h1>
+                            <p class="text-lg text-gray-600 mb-8">Testez vos connaissances en IA !</p>
+                            <button onclick="startQuiz()" class="gradient-bg text-white px-8 py-4 rounded-xl font-semibold hover-scale transition-all">
+                                🚀 Commencer le Quiz
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (!quizCompleted) {
+                // Quiz en cours
+                const q = questions[currentQuestion];
+                const progress = ((currentQuestion + 1) / questions.length) * 100;
+                
+                let optionsHTML = '';
+                q.options.forEach((option, i) => {
+                    let buttonClass = 'w-full p-4 text-left border-2 rounded-xl transition-all duration-300 ';
+                    if (showExplanation) {
+                        if (i === q.correct) buttonClass += 'border-green-500 bg-green-50 text-green-800';
+                        else if (i === selectedAnswer && i !== q.correct) buttonClass += 'border-red-500 bg-red-50 text-red-800';
+                        else buttonClass += 'border-gray-200 bg-gray-50 text-gray-600';
+                    } else {
+                        if (selectedAnswer === i) buttonClass += 'border-blue-500 bg-blue-50 text-blue-800';
+                        else buttonClass += 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700';
+                    }
+                    
+                    optionsHTML += `
+                        <button onclick="selectAnswer(${i})" class="${buttonClass}" ${showExplanation ? 'disabled' : ''}>
+                            <div class="flex items-center">
+                                <span class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-semibold mr-4">
+                                    ${String.fromCharCode(65 + i)}
+                                </span>
+                                <span class="flex-1">${option}</span>
+                                ${showExplanation && i === q.correct ? '<span class="ml-2">✅</span>' : ''}
+                                ${showExplanation && i === selectedAnswer && i !== q.correct ? '<span class="ml-2">❌</span>' : ''}
+                            </div>
+                        </button>
+                    `;
+                });
 
-        function updateTimer() { if (!quizCompleted) { timeSpent = Math.floor((Date.now() - startTime) / 1000); document.getElementById('timer').textContent = formatTime(timeSpent); } }
-
-        function loadQuestion() {
-            const q = questions[currentQuestion]; const progress = ((currentQuestion + 1) / questions.length) * 100;
-            document.getElementById('categoryIcon').className = `w-12 h-12 ${q.categoryColor} rounded-full flex items-center justify-center text-white mr-4`; document.getElementById('categoryIcon').textContent = q.categoryIcon; document.getElementById('categoryName').textContent = q.category; document.getElementById('questionCounter').textContent = `Question ${currentQuestion + 1} sur ${questions.length}`; document.getElementById('currentScore').textContent = score; document.getElementById('progressBar').style.width = `${progress}%`; document.getElementById('questionText').textContent = q.question;
-            const optionsContainer = document.getElementById('answerOptions'); optionsContainer.innerHTML = '';
-            q.options.forEach((option, index) => { const button = document.createElement('button'); button.className = 'w-full p-4 text-left border-2 rounded-xl transition-all duration-300 border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700'; button.onclick = () => selectAnswer(index); button.innerHTML = `<div class="flex items-center"><span class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-semibold mr-4">${String.fromCharCode(65 + index)}</span><span class="flex-1">${option}</span></div>`; optionsContainer.appendChild(button); });
-            selectedAnswer = null; showExplanation = false; document.getElementById('explanationArea').classList.add('hidden'); updateActionButton();
-        }
-
-        function selectAnswer(index) { if (showExplanation) return; selectedAnswer = index; const buttons = document.querySelectorAll('#answerOptions button'); buttons.forEach((btn, i) => { btn.className = i === index ? 'w-full p-4 text-left border-2 rounded-xl transition-all duration-300 border-blue-500 bg-blue-50 text-blue-800' : 'w-full p-4 text-left border-2 rounded-xl transition-all duration-300 border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700'; }); updateActionButton(); }
-
-        function updateActionButton() {
-            const button = document.getElementById('actionButton');
-            if (selectedAnswer === null) { button.disabled = true; button.className = 'px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center bg-gray-300 text-gray-500 cursor-not-allowed'; button.innerHTML = 'Valider ✅'; }
-            else { button.disabled = false; button.className = 'px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gradient-bg text-white hover-scale'; button.innerHTML = !showExplanation ? 'Val
-                function updateActionButton() {
-            const button = document.getElementById('actionButton');
-            if (selectedAnswer === null) { 
-                button.disabled = true; 
-                button.className = 'px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center bg-gray-300 text-gray-500 cursor-not-allowed'; 
-                button.innerHTML = 'Valider ✅'; 
-            } else { 
-                button.disabled = false; 
-                button.className = 'px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gradient-bg text-white hover-scale'; 
-                if (!showExplanation) {
-                    button.innerHTML = 'Valider ✅';
-                } else {
-                    button.innerHTML = currentQuestion === questions.length - 1 ? 'Voir les résultats 🏆' : 'Question suivante ➡️';
-                }
+                app.innerHTML = `
+                    <div class="max-w-4xl mx-auto p-6">
+                        <div class="bg-white rounded-2xl shadow-xl p-8">
+                            <div class="flex justify-between mb-6">
+                                <div>
+                                    <h2 class="text-lg font-semibold">${q.category}</h2>
+                                    <p class="text-sm text-gray-600">Question ${currentQuestion + 1} sur ${questions.length}</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold text-blue-600">${score}</div>
+                                    <div class="text-sm text-gray-600">Score</div>
+                                </div>
+                            </div>
+                            
+                            <div class="w-full bg-gray-200 rounded-full h-2 mb-8">
+                                <div class="gradient-bg h-2 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                            </div>
+                            
+                            <h1 class="text-2xl font-bold mb-6">${q.question}</h1>
+                            
+                            <div class="space-y-3 mb-8">
+                                ${optionsHTML}
+                            </div>
+                            
+                            ${showExplanation ? `
+                                <div class="mb-8 p-6 bg-blue-50 rounded-xl border border-blue-200">
+                                    <h3 class="text-lg font-semibold text-blue-800 mb-3">📖 Explication</h3>
+                                    <p class="text-gray-700">${q.explanation}</p>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="flex justify-between items-center">
+                                <div class="text-sm text-gray-600">⏱️ ${formatTime(timeSpent)}</div>
+                                <button onclick="handleNext()" ${selectedAnswer === null ? 'disabled' : ''} 
+                                        class="px-8 py-3 rounded-xl font-semibold transition-all ${selectedAnswer === null ? 'bg-gray-300 text-gray-500' : 'gradient-bg text-white hover-scale'}">
+                                    ${!showExplanation ? 'Valider ✅' : (currentQuestion === questions.length - 1 ? 'Voir résultats 🏆' : 'Suivant ➡️')}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Résultats
+                const scoreLevel = getScoreLevel(score);
+                const percentage = Math.round((score / questions.length) * 100);
+                
+                app.innerHTML = `
+                    <div class="max-w-4xl mx-auto p-6">
+                        <div class="bg-white rounded-2xl shadow-xl p-8 text-center">
+                            <div class="text-6xl mb-4">${scoreLevel.icon}</div>
+                            <h1 class="text-3xl font-bold mb-4">Quiz Terminé !</h1>
+                            
+                            <div class="gradient-bg text-white rounded-xl p-6 mb-6">
+                                <div class="text-4xl font-bold mb-2">${score}/${questions.length}</div>
+                                <div class="text-xl font-semibold ${scoreLevel.color} bg-white rounded-lg py-2 px-4 inline-block mb-3">
+                                    ${scoreLevel.level}
+                                </div>
+                                <p class="text-sm opacity-90">Score: ${percentage}% • Temps: ${formatTime(timeSpent)}</p>
+                            </div>
+                            
+                            <button onclick="restart()" class="gradient-bg text-white px-8 py-3 rounded-xl font-semibold hover-scale transition-all">
+                                🔄 Recommencer
+                            </button>
+                        </div>
+                    </div>
+                `;
             }
+        }
+
+        function startQuiz() {
+            startTime = Date.now();
+            timer = setInterval(() => {
+                if (!quizCompleted) {
+                    timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                    render();
+                }
+            }, 1000);
+            render();
+        }
+
+        function selectAnswer(index) {
+            if (showExplanation) return;
+            selectedAnswer = index;
+            render();
         }
 
         function handleNext() {
             if (selectedAnswer === null) return;
-            if (!showExplanation) { 
-                showExplanation = true; 
-                showExplanationArea(); 
-                updateActionButton(); 
-            } else { 
-                const isCorrect = selectedAnswer === questions[currentQuestion].correct; 
-                answers.push({ questionId: questions[currentQuestion].id, selected: selectedAnswer, correct: questions[currentQuestion].correct, isCorrect: isCorrect }); 
-                if (isCorrect) score++; 
-                if (currentQuestion < questions.length - 1) { currentQuestion++; loadQuestion(); } else { completeQuiz(); } 
-            }
-        }
-
-        function showExplanationArea() {
-            const q = questions[currentQuestion];
-            const buttons = document.querySelectorAll('#answerOptions button');
-            buttons.forEach((btn, index) => {
-                if (index === q.correct) { 
-                    btn.className = 'w-full p-4 text-left border-2 rounded-xl transition-all duration-300 border-green-500 bg-green-50 text-green-800'; 
-                    btn.innerHTML += ' <span class="ml-2">✅</span>'; 
-                } else if (index === selectedAnswer && index !== q.correct) { 
-                    btn.className = 'w-full p-4 text-left border-2 rounded-xl transition-all duration-300 border-red-500 bg-red-50 text-red-800'; 
-                    btn.innerHTML += ' <span class="ml-2">❌</span>'; 
-                } else { 
-                    btn.className = 'w-full p-4 text-left border-2 rounded-xl transition-all duration-300 border-gray-200 bg-gray-50 text-gray-600'; 
+            
+            if (!showExplanation) {
+                showExplanation = true;
+            } else {
+                const isCorrect = selectedAnswer === questions[currentQuestion].correct;
+                if (isCorrect) score++;
+                
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    selectedAnswer = null;
+                    showExplanation = false;
+                } else {
+                    quizCompleted = true;
+                    clearInterval(timer);
                 }
-            });
-            document.getElementById('explanationText').textContent = q.explanation;
-            const definitionsArea = document.getElementById('definitionsArea'); 
-            definitionsArea.innerHTML = '';
-            Object.entries(q.definitions).forEach(([term, definition]) => { 
-                const div = document.createElement('div'); 
-                div.className = 'bg-white rounded-lg p-3 border border-blue-100'; 
-                div.innerHTML = `<span class="font-semibold text-blue-700">${term}:</span> <span class="text-gray-700">${definition}</span>`; 
-                definitionsArea.appendChild(div); 
-            });
-            document.getElementById('explanationArea').classList.remove('hidden');
+            }
+            render();
         }
 
-        function completeQuiz() { 
-            quizCompleted = true; 
-            clearInterval(timer); 
-            document.getElementById('quizScreen').classList.add('hidden'); 
-            document.getElementById('resultsScreen').classList.remove('hidden'); 
-            showResults(); 
+        function restart() {
+            currentQuestion = 0;
+            selectedAnswer = null;
+            showExplanation = false;
+            score = 0;
+            quizCompleted = false;
+            timeSpent = 0;
+            if (timer) clearInterval(timer);
+            timer = null;
+            render();
         }
 
-        function showResults() {
-            const scoreLevel = getScoreLevel(score); 
-            const percentage = Math.round((score / questions.length) * 100);
-            document.getElementById('resultIcon').textContent = scoreLevel.icon; 
-            document.getElementById('finalScore').textContent = `${score}/20`; 
-            document.getElementById('levelBadge').textContent = scoreLevel.level; 
-            document.getElementById('levelBadge').className = `text-xl font-semibold bg-white rounded-lg py-2 px-4 inline-block mb-3 ${scoreLevel.color}`; 
-            document.getElementById('levelDescription').textContent = scoreLevel.description;
-            document.getElementById('percentageScore').textContent = `${percentage}%`; 
-            document.getElementById('finalTime').textContent = formatTime(timeSpent); 
-            document.getElementById('correctAnswers').textContent = score;
-            const categoryResults = document.getElementById('categoryResults'); 
-            categoryResults.innerHTML = '';
-            const categories = { "Comprendre les bases": { color: "bg-blue-500", icon: "🧠" }, "Utiliser / prompt-engineer": { color: "bg-green-500", icon: "⚡" }, "Évaluer / esprit critique": { color: "bg-orange-500", icon: "🎯" }, "Créer / automatiser": { color: "bg-purple-500", icon: "🚀" } };
-            Object.keys(categories).forEach(category => { 
-                const categoryQuestions = questions.filter(q => q.category === category); 
-                const categoryAnswers = answers.filter(a => categoryQuestions.some(q => q.id === a.questionId)); 
-                const categoryScore = categoryAnswers.filter(a => a.isCorrect).length;
-                const div = document.createElement('div'); 
-                div.className = 'bg-gray-50 rounded-lg p-4'; 
-                div.innerHTML = `<div class="flex items-center mb-2"><div class="${categories[category].color} text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">${categories[category].icon}</div><div class="text-sm font-medium">${category}</div></div><div class="text-lg font-bold">${categoryScore}/${categoryQuestions.length}</div>`; 
-                categoryResults.appendChild(div); 
-            });
-        }
-
-        function restartQuiz() { 
-            currentQuestion = 0; 
-            selectedAnswer = null; 
-            showExplanation = false; 
-            score = 0; 
-            answers = []; 
-            quizCompleted = false; 
-            timeSpent = 0; 
-            document.getElementById('resultsScreen').classList.add('hidden'); 
-            document.getElementById('startScreen').classList.remove('hidden'); 
-            if (timer) clearInterval(timer); 
-        }
+        // Initialisation
+        render();
     </script>
 </body>
 </html>
