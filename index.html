@@ -23,9 +23,6 @@
         let score = 0;
         let answers = [];
         let quizCompleted = false;
-        let startTime = Date.now();
-        let timeSpent = 0;
-        let timer = null;
 
         // Questions complètes (20 questions du QCM original)
         const questions = [
@@ -440,11 +437,6 @@
         ];
 
         // Fonctions utilitaires
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return mins + ':' + secs.toString().padStart(2, '0');
-        }
 
         function getScoreLevel(score) {
             if (score >= 18) return { 
@@ -637,9 +629,8 @@
                             ` : ''}
 
                             <!-- Boutons d'action -->
-                            <div class="flex justify-between items-center">
+                            <div class="flex justify-end items-center">
                                 <div class="text-sm text-gray-600">
-                                    ⏱️ Temps: ${formatTime(timeSpent)}
                                 </div>
                                 
                                 <button onclick="handleNext()" ${selectedAnswer === null ? 'disabled' : ''} 
@@ -706,10 +697,6 @@
                                     <div class="text-sm text-gray-600">Score</div>
                                 </div>
                                 <div class="bg-gray-50 rounded-lg p-4">
-                                    <div class="text-2xl font-bold text-gray-700">${formatTime(timeSpent)}</div>
-                                    <div class="text-sm text-gray-600">Temps</div>
-                                </div>
-                                <div class="bg-gray-50 rounded-lg p-4">
                                     <div class="text-2xl font-bold text-gray-700">${score}</div>
                                     <div class="text-sm text-gray-600">Bonnes réponses</div>
                                 </div>
@@ -733,15 +720,8 @@
 
         // Fonctions principales
         function startQuiz() {
-            startTime = Date.now();
-            timer = setInterval(() => {
-                if (!quizCompleted) {
-                    timeSpent = Math.floor((Date.now() - startTime) / 1000);
-                    render();
-                }
-            }, 1000);
-            render();
-        }
+    render();
+}
 
         function selectAnswer(index) {
             if (showExplanation) return;
@@ -772,7 +752,6 @@
                     showExplanation = false;
                 } else {
                     quizCompleted = true;
-                    clearInterval(timer);
                 }
             }
             render();
@@ -785,9 +764,6 @@
             score = 0;
             answers = [];
             quizCompleted = false;
-            timeSpent = 0;
-            if (timer) clearInterval(timer);
-            timer = null;
             render();
         }
 
