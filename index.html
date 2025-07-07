@@ -437,7 +437,6 @@
         ];
 
         // Fonctions utilitaires
-
         function getScoreLevel(score) {
             if (score >= 18) return { 
                 level: "AI Fluent", 
@@ -469,7 +468,7 @@
         function render() {
             const app = document.getElementById('app');
             
-            if (!quizCompleted && currentQuestion === 0 && !timer) {
+            if (!quizCompleted && currentQuestion === 0 && selectedAnswer === null) {
                 // Écran de démarrage
                 app.innerHTML = `
                     <div class="max-w-4xl mx-auto p-6 min-h-screen">
@@ -517,7 +516,7 @@
                             </button>
                             
                             <div class="mt-6 text-sm text-gray-500">
-                                ⏱️ Durée estimée : 15 minutes • 📊 20 questions • 🏆 Certification de niveau
+                                📊 20 questions • 🏆 Certification de niveau
                             </div>
                         </div>
                     </div>
@@ -630,9 +629,6 @@
 
                             <!-- Boutons d'action -->
                             <div class="flex justify-end items-center">
-                                <div class="text-sm text-gray-600">
-                                </div>
-                                
                                 <button onclick="handleNext()" ${selectedAnswer === null ? 'disabled' : ''} 
                                         class="px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center ${selectedAnswer === null ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'gradient-bg text-white hover-scale'}">
                                     ${!showExplanation ? 'Valider ✅' : (currentQuestion === questions.length - 1 ? 'Voir les résultats 🏆' : 'Question suivante ➡️')}
@@ -691,7 +687,7 @@
                                 </p>
                             </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <div class="text-2xl font-bold text-gray-700">${percentage}%</div>
                                     <div class="text-sm text-gray-600">Score</div>
@@ -720,8 +716,8 @@
 
         // Fonctions principales
         function startQuiz() {
-    render();
-}
+            render();
+        }
 
         function selectAnswer(index) {
             if (showExplanation) return;
