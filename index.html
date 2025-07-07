@@ -745,7 +745,7 @@
     
     // Timer qui se met à jour SEULEMENT quand on n'est pas en train de répondre
     timer = setInterval(() => {
-        if (!quizCompleted && !showExplanation) {
+        if (!quizCompleted) {
             timeSpent = Math.floor((Date.now() - startTime) / 1000);
             // Mise à jour SEULEMENT du timer, pas de re-render complet
             const timerElement = document.getElementById('timer');
