@@ -2,15 +2,112 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz AI Fluency</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #3b82f6, #8b5cf6); }
+        .hover-scale:hover { transform: scale(1.02); }
+    </style>
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-4xl mx-auto bg-white rounded-lg p-8">
-        <h1 class="text-3xl font-bold mb-4">Quiz AI Fluency</h1>
-        <button onclick="alert('ça marche!')" class="bg-blue-500 text-white px-6 py-3 rounded">
-            Test Button
-        </button>
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+    <div class="max-w-4xl mx-auto p-6">
+        
+        <!-- Écran de démarrage -->
+        <div id="startScreen" class="bg-white rounded-2xl shadow-xl p-8 text-center">
+            <div class="text-6xl mb-6">🧠</div>
+            <h1 class="text-4xl font-bold mb-4">Quiz AI Fluency</h1>
+            <p class="text-lg text-gray-600 mb-8">
+                Évaluez votre maîtrise de l'IA avec 20 questions interactives !
+            </p>
+            <button onclick="startQuiz()" class="gradient-bg text-white px-8 py-4 rounded-xl font-semibold hover-scale transition-all">
+                🚀 Commencer le Quiz
+            </button>
+        </div>
+
+        <!-- Quiz en cours -->
+        <div id="quizScreen" class="bg-white rounded-2xl shadow-xl p-8 hidden">
+            <h2 id="questionText" class="text-2xl font-bold mb-6">Question en cours...</h2>
+            <div id="answers" class="space-y-3 mb-6"></div>
+            <button onclick="nextQuestion()" class="gradient-bg text-white px-6 py-3 rounded-lg">
+                Suivant
+            </button>
+        </div>
+
+        <!-- Résultats -->
+        <div id="resultsScreen" class="bg-white rounded-2xl shadow-xl p-8 text-center hidden">
+            <h1 class="text-3xl font-bold mb-4">Quiz Terminé !</h1>
+            <div class="text-6xl mb-4">🏆</div>
+            <p id="finalResult" class="text-xl mb-6">Votre score : 18/20</p>
+            <button onclick="restart()" class="gradient-bg text-white px-6 py-3 rounded-lg">
+                Recommencer
+            </button>
+        </div>
     </div>
+
+    <script>
+        let currentQ = 0;
+        let score = 0;
+        
+        const questions = [
+            {
+                q: "Qu'appelle-t-on 'hallucination' dans un LLM ?",
+                options: ["Arrêt brutal", "Réponse plausible mais fausse", "Prompt trop court", "Biais des données"],
+                correct: 1
+            },
+            {
+                q: "La 'self-attention' d'un Transformer sert à :",
+                options: ["Normaliser", "Détecter spam", "Pondérer l'importance des tokens", "Compresser"],
+                correct: 2
+            }
+            // On ajoutera le reste après
+        ];
+
+        function startQuiz() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('questionText').textContent = q.q;
+            
+            const answers = document.getElementById('answers');
+            answers.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                answers.innerHTML += `
+                    <button onclick="selectAnswer(${i})" class="w-full p-4 text-left border rounded-lg hover:bg-blue-50">
+                        ${String.fromCharCode(65 + i)}. ${option}
+                    </button>
+                `;
+            });
+        }
+
+        function selectAnswer(index) {
+            if (index === questions[currentQ].correct) score++;
+            currentQ++;
+            
+            if (currentQ < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+            document.getElementById('finalResult').textContent = `Votre score : ${score}/${questions.length}`;
+        }
+
+        function restart() {
+            currentQ = 0;
+            score = 0;
+            document.getElementById('resultsScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
