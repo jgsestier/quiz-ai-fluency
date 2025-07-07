@@ -751,41 +751,10 @@
 }
 
         function selectAnswer(index) {
-    if (showExplanation) return;
-    
-    const previousAnswer = selectedAnswer;
-    selectedAnswer = index;
-    
-    // Si c'est juste un changement de sélection, mise à jour rapide
-    if (previousAnswer !== null) {
-        // Mise à jour rapide des styles seulement
-        const buttons = document.querySelectorAll('#answerOptions button');
-        buttons.forEach((btn, i) => {
-            if (i === index) {
-                btn.className = 'w-full p-4 text-left border-2 rounded-xl transition-all duration-300 border-blue-500 bg-blue-50 text-blue-800';
-            } else {
-                btn.className = 'w-full p-4 text-left border-2 rounded-xl transition-all duration-300 border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700';
-            }
-        });
-        
-        // Mise à jour du bouton
-        const actionButton = document.getElementById('actionButton');
-        actionButton.disabled = false;
-        actionButton.className = 'px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gradient-bg text-white hover-scale';
-    } else {
-        // Premier clic, render complet
-        render();
-    }
-}
-    });
-    
-    // Mise à jour du bouton d'action
-    const actionButton = document.getElementById('actionButton');
-    actionButton.disabled = false;
-    actionButton.className = 'px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gradient-bg text-white hover-scale';
-    
-    // Plus de render() ici !
-}
+            if (showExplanation) return;
+            selectedAnswer = index;
+            render();
+        }
 
         function handleNext() {
             if (selectedAnswer === null) return;
